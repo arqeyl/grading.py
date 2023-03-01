@@ -8,7 +8,7 @@ core_subject3 = ["Bahasa Melayu", "English", "Mathematics", "History", "Science"
 
 preset_subject1 = ["Physics","Chemistry","Biology","Additional Mathematics"]
 
-elective_subject = ["Bahasa Arab", "Pendidikan Syariah Islamiah", "Pendidikan Al-Quran dan As-Sunnah" ,"Bahasa Cina", "Bahasa Tamil", "Physics", "Chemistry", "Biology", "Additional Mathematics", "Accounting", "Computer Science", "Economy", "Art", "Business", "Geography"]
+elective_subject = ["Bahasa Arab", "Pendidikan Syariah Islamiah", "Pendidikan Al-Quran dan As-Sunnah" ,"Bahasa Cina", "Bahasa Tamil", "Physics", "Chemistry", "Biology", "Additional Mathematics", "Account", "Computer Science", "Economy", "Art", "Business", "Geography"]
 additional_subject = []
 
 cli_subjects = []
