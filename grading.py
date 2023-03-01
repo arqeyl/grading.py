@@ -144,7 +144,6 @@ def _number_of_subject():
     print("Number of Subject: "+str(len(cli_subjects))+"\n")
 
 
-
 def _result():
     clear()
     print("\nEXAMINATION RESULT:\n")
@@ -156,7 +155,7 @@ def _result():
     _overall_mark()
     _overall_percentage()
     x = "Result: "
-    if cli_overall_percentage > grade["E"] and cli_subjects_mark[3] > grade["E"] and cli_subjects_mark[0] > grade["E"]: # check if History passed or not
+    if cli_overall_percentage > grade["E"] and cli_subjects_mark[3] > grade["E"] and cli_subjects_mark[0] > grade["E"]: # check if History and BM passed or not
         print(x, "PASSED")
     else:
         print(x, "FAILED")
