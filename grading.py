@@ -1,82 +1,169 @@
+from os import system, name
+
 grade = {'A+': 90, 'A' : 80, 'A-' : 70, 'B+' : 65, 'B' : 60, 'C+' : 55, 'C' : 50, 'D' : 45, 'E' : 40, 'G' : 0}
-req_client1 = "subject "
-req_client2 = " : mark: "
-req_client3 = " : grade: "
+
+core_subject1 = ["Bahasa Melayu", "English", "Mathematics", "History"]
+core_subject2 = ["Bahasa Melayu", "English", "Mathematics", "History", "Pendidikan Islam/Pendidikan Moral"]
+core_subject3 = ["Bahasa Melayu", "English", "Mathematics", "History", "Science", "Pendidikan Islam/Pendidikan Moral"]
+
+preset_subject1 = ["Physics","Chemistry","Biology","Additional Mathematics"]
+
+elective_subject = ["Bahasa Arab", "Pendidikan Syariah Islamiah", "Pendidikan Al-Quran dan As-Sunnah" ,"Bahasa Cina", "Bahasa Tamil", "Physics", "Chemistry", "Biology", "Additional Mathematics", "Accounting", "Computer Science", "Economy", "Art", "Business", "Geography"]
+additional_subject = []
+
+cli_subjects = []
+cli_subjects_mark = []
+cli_subjects_grade = []
+all_subjects_mark = 0
+cli_overall_marks = 0
+cli_overall_percentage = 0.0
 
 
-def _subject_count():
-    subject_count = 0
-    request_client = input("number of examination subjects: ")
-    subject_count = int(request_client)
-    return subject_count
-
-
-def _subject_mark(s_count):
-    subject_mark = []
-    for i in range(0, s_count):
-        x = input(req_client1 + str(i+1) + req_client2)
-        subject_mark.append(int(x))
-    return subject_mark
+def clear():
+    # for windows
+    if name == 'nt':
+        _ = system('cls')
  
+    # for mac and linux(here, os.name is 'posix')
+    else:
+        _ = system('clear')
 
-def _subject_grade(s_mark):
-    subject_grade = []
-    for i in s_mark:
+
+def query(qu):
+    while True:
+        cli_input = input(qu)
+        Fl = cli_input[0].lower()
+        if cli_input == '' or not Fl in ['y','n']:
+            print('Please respond with [Y]yes or [n]no!')
+        else:
+            return Fl
+            break
+
+
+def _select_core_subject():
+    clear()
+    while True:
+        cli_input = input("\n"
+                "  +  Core Subject 1 "+str(core_subject1)+", type [0]\n"
+                "  +  Core Subject 2 "+str(core_subject2)+", type [1]\n"
+                "  +  Core Subject 3 "+str(core_subject3)+", type [2]\n\n"
+                "> Select your core subjects: "
+                )
+        if cli_input == '' or not [0,1,2]: 
+            print("Please respond correctly!")
+        else:
+            break
+    c_subs = [core_subject1, core_subject2, core_subject3]
+    for i in range(0,len(c_subs[int(cli_input)])):
+        cli_subjects.append(c_subs[int(cli_input)][i])
+    clear()
+    _select_elective_subject()
+
+
+def _select_elective_subject():
+    while True:
+        cli_input = input("\n"
+            "  +  Elective Subject 1 "+str(preset_subject1)+", type [0]\n"
+            "  +  Choose your own elective subject, type [1]\n\n"
+            "> Select your elective subject: "
+            )
+        if cli_input == '' or not [0,1]:
+            print("Please respond correctly!")
+        else:
+            break
+    ps_subs = [preset_subject1]
+    if int(cli_input) == 1:
+        clear()
+        _select_specific_elective_subject()
+    else:
+        for i in range(0,len(ps_subs[int(cli_input)])):
+            cli_subjects.append(ps_subs[int(cli_input)][i])
+    clear()
+    _select_subject_confirmation()
+
+
+def _select_specific_elective_subject():
+    for i in range(0, len(elective_subject)):
+        qinput = "\n> Add "+str(elective_subject[i])+" as your subject? [Y/n] "
+        reply = query(qinput)
+        if reply == "y":
+            cli_subjects.append(elective_subject[i])
+        elif reply=="n":
+            pass
+
+
+def _select_subject_confirmation():
+    qinput = "\n> Do you confirm this is your subject? "+ str(cli_subjects)+ ", [Y/n] "
+    reply = query(qinput)
+    if reply == "y":
+        pass
+    elif reply =="n":
+        exit()
+    _subject_marking()
+
+
+def _subject_marking():
+    clear()
+    for i in range(0, len(cli_subjects)):
+        while True:
+            cli_input = input("\nWhat is the examination mark for ["+cli_subjects[i]+"]?\n> ")
+            if not cli_input.isnumeric() or int(cli_input)>100:
+                print("Please respond correctly, and maximum mark is only 100!")
+            else:
+                cli_subjects_mark.append(int(cli_input))
+                break
+    _result()
+
+
+def _subject_grading():
+    for i in cli_subjects_mark:
         for j in grade:
             if i >= grade[j]:
-                subject_grade.append(j)
-                break;
-    return subject_grade
+                cli_subjects_grade.append(j)
+                break
 
 
-def _overall_grade(s_grade):
-    print(s_grade)
-
-
-def _overall_mark_count(s_count, s_mark):
+def _overall_mark():
+    global all_subjects_mark
+    global cli_overall_marks
     x = 0
-    y = s_count * 100
-    for i in s_mark:
+    all_subjects_mark = len(cli_subjects) * 100
+    for i in cli_subjects_mark:
         x += i
-    print("overall mark:", x, "/", y)
-    return x
+    cli_overall_marks = x
+    print("Overall Marks:", str(cli_overall_marks), "/", all_subjects_mark)
 
 
-def _overall_percentage_result(s_count, omark_count):
-    x = s_count * 100
-    y = (omark_count/s_count)
-    print("overall result percentage:", str(y) + "%")
-    return y
+def _overall_percentage():
+    global cli_overall_percentage
+    cli_overall_percentage = (cli_overall_marks/all_subjects_mark) * 100
+    print("Percentage:", str(cli_overall_percentage) + "%")
 
 
-def _failure_standard_review(opercent_result):
-    x = "failure standard review:"
-    if opercent_result > grade["E"]:
+def _number_of_subject():
+    print("Number of Subject: "+str(len(cli_subjects))+"\n")
+
+
+
+def _result():
+    clear()
+    print("\nEXAMINATION RESULT:\n")
+    _subject_grading()
+    _number_of_subject()
+    for i in range(0,len(cli_subjects)):
+        print(cli_subjects[i]+" "+str(cli_subjects_mark[i])+" "+cli_subjects_grade[i])
+    print("\nOverall Grades: "+str(cli_subjects_grade))
+    _overall_mark()
+    _overall_percentage()
+    x = "Result: "
+    if cli_overall_percentage > grade["E"] and cli_subjects_mark[3] > grade["E"] and cli_subjects_mark[0] > grade["E"]: # check if History passed or not
         print(x, "PASSED")
     else:
         print(x, "FAILED")
 
 
-def _average_grade():
-    pass
-
-
-def _result():
-    _sc = _subject_count()
-    _sm = _subject_mark(_sc)
-    _sg = _subject_grade(_sm)
-    print("EXAM RESULT:")
-    for i in range(0, _sc):
-        print(req_client1 + str(i+1) + req_client2 + str(_sm[i]) + req_client3 + str(_sg[i]))
-    _overall_grade(_sg)
-    _omc = _overall_mark_count(_sc, _sm)
-    _opr = _overall_percentage_result(_sc, _omc)
-    _failure_standard_review(_opr)
-    # update idea: add gpa result
-
-
 def main():
-    _result()
+    _select_core_subject()
 
 
 main()
