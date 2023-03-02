@@ -1,4 +1,6 @@
 from os import system, name
+from openpyxl import Workbook
+import numpy as np
 
 grade = {'A+': 90, 'A' : 80, 'A-' : 70, 'B+' : 65, 'B' : 60, 'C+' : 55, 'C' : 50, 'D' : 45, 'E' : 40, 'G' : 0}
 
@@ -17,6 +19,7 @@ cli_subjects_grade = []
 all_subjects_mark = 0
 cli_overall_marks = 0
 cli_overall_percentage = 0.0
+cli_result = ""
 
 
 def clear():
@@ -145,6 +148,7 @@ def _number_of_subject():
 
 
 def _result():
+    global cli_result
     clear()
     print("\nEXAMINATION RESULT:\n")
     _subject_grading()
@@ -156,9 +160,38 @@ def _result():
     _overall_percentage()
     x = "Result: "
     if cli_overall_percentage > grade["E"] and cli_subjects_mark[3] > grade["E"] and cli_subjects_mark[0] > grade["E"]: # check if History and BM passed or not
-        print(x, "PASSED")
+        cli_result = "PASSED"
     else:
-        print(x, "FAILED")
+        cli_result = "FAILED"
+    print(x, cli_result)
+    reply = query("\n> Would you like to create a spreadsheet? [Y/n] ")
+    if reply == "y":
+        _create_result_spreadsheet()
+    elif reply=="n":
+        exit()
+
+
+def _create_result_spreadsheet():
+    wb = Workbook()
+    ws = wb.active
+
+    wbname = input("\n> Enter a filename for your spreadsheet: ")
+
+    clmn1 = np.array(["Overall Grades", "Overall Marks", "Percentage", "Result"])
+    clmn2 = np.array([str(cli_subjects_grade), str(str(cli_overall_marks) + "/" + str(all_subjects_mark)), cli_overall_percentage, cli_result])
+    clmn3 = cli_subjects_grade
+
+    clmn1 = np.insert(clmn1, 0 , cli_subjects)
+    clmn2 = np.insert(clmn2, 0 , cli_subjects_mark)
+    
+    for i in range(len(clmn1)):
+        ws.cell(row=i+1, column=1, value=clmn1[i])
+    for i in range(len(clmn2)):
+        ws.cell(row=i+1, column=2, value=clmn2[i])
+    for i in range(len(clmn3)):
+        ws.cell(row=i+1, column=3, value=clmn3[i])
+
+    wb.save(wbname+".xlsx")
 
 
 def main():
